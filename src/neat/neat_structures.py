@@ -2,9 +2,10 @@ from typing import List
 
 
 class Genome:
-    def __init__(self, genes: List, fitness: float):
+    def __init__(self, genes: List, fitness: float, generation: int = 0):
         self.genes = genes
         self.fitness = fitness
+        self.generation = generation
         self.inos = set([g.ino for g in genes])
         self.ino_dic = {g.ino: g for g in genes}
 

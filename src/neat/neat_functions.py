@@ -4,11 +4,12 @@ from random import random, choice
 from typing import Callable
 
 
-def breed(g1: Genome, g2: Genome, get_fitness: Callable) -> Genome:
+def breed(g1: Genome, g2: Genome, get_fitness: Callable, generation: int) -> Genome:
     """
     :param g1: Genome of the first parent
     :param g2: Genome of the second parent
     :param get_fitness: Genome of the second parent
+    :param generation: Current generation
     :return: Genome of the child
     """
     if g1 > g2:
@@ -31,6 +32,6 @@ def breed(g1: Genome, g2: Genome, get_fitness: Callable) -> Genome:
 
     fitness = get_fitness(genome)
 
-    child = Genome(genome, fitness)
+    child = Genome(genome, fitness, generation)
 
     return child
