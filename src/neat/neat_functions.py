@@ -8,7 +8,7 @@ def breed(g1: Genome, g2: Genome, get_fitness: Callable) -> Genome:
     """
     :param g1: Genome of the first parent
     :param g2: Genome of the second parent
-    :param fitness: Genome of the second parent
+    :param get_fitness: Genome of the second parent
     :return: Genome of the child
     """
     if g1 > g2:
@@ -21,7 +21,7 @@ def breed(g1: Genome, g2: Genome, get_fitness: Callable) -> Genome:
     for ino in genome_dic:
         if ino in other_parent.inos:
             if not better_parent.ino_dic[ino].active or not other_parent.ino_dic[ino].active:
-                if random < .75:
+                if random() < .75:
                     genome_dic[ino].active = False
                 else:
                     genome_dic[ino].active = True
@@ -34,11 +34,3 @@ def breed(g1: Genome, g2: Genome, get_fitness: Callable) -> Genome:
     child = Genome(genome, fitness)
 
     return child
-
-
-
-
-
-
-
-

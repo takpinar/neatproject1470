@@ -62,3 +62,12 @@ def test_breed_fitness():
     child = breed(genome_0_high, genome_1, get_fitness=get_fitness)
     assert child.fitness == 12
 
+
+def test_breed_inos():
+    child = breed(genome_0_high, genome_1, get_fitness=get_fitness)
+    assert child.inos == set([0, 1])
+
+
+def test_breed_ino_dic():
+    child = breed(genome_0_high, genome_1, get_fitness=get_fitness)
+    assert len(child.ino_dic) == 2
