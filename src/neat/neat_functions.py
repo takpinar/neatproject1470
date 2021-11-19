@@ -4,7 +4,7 @@ from random import random, choice, uniform
 from typing import Callable
 
 
-def initialization(n_inputs: int, n_outputs: int, find_fitness: Callable, pop_size: int = 150):
+def initialization(n_inputs: int, n_outputs: int, get_fitness: Callable, pop_size: int = 150):
     ino = 0
     population_genomes = [[] for _ in range(pop_size)]
 
@@ -23,7 +23,7 @@ def initialization(n_inputs: int, n_outputs: int, find_fitness: Callable, pop_si
 
     population = []
     for gen in population_genomes:
-        fitness = find_fitness(gen)
+        fitness = get_fitness(gen)
         population.append(Genome(gen, fitness, generation=0))
 
     return population
