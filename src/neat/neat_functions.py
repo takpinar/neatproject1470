@@ -1,6 +1,6 @@
 from neat.neat_structures import Genome, Gene, Species
 from copy import deepcopy
-from random import random, choice
+from random import random, choice, uniform
 from typing import Callable
 
 
