@@ -13,11 +13,11 @@ def initialization(n_inputs: int, n_outputs: int, gene: Gene, genome: Genome, fi
         for j in range(n_outputs):
             for k in range(pop_size):
                 new_gene = gene(n_in=1,
-                            n_out=j,
-                            w=uniform(-1, 1),
-                            ino=ino,
-                            active=True
-                            )
+                                n_out=j,
+                                w=uniform(-1, 1),
+                                ino=ino,
+                                active=True
+                                )
                 population_genomes[k].append(new_gene)
             ino += 1
 
@@ -37,7 +37,7 @@ def breed(g1: Genome, g2: Genome, get_fitness: Callable, generation: int) -> Gen
     :param generation: Current generation
     :return: Genome of the child
     """
-    if g1 > g2:
+    if g1>g2:
         better_parent = g1
         other_parent = g2
     else:
@@ -47,7 +47,7 @@ def breed(g1: Genome, g2: Genome, get_fitness: Callable, generation: int) -> Gen
     for ino in genome_dic:
         if ino in other_parent.inos:
             if not better_parent.ino_dic[ino].active or not other_parent.ino_dic[ino].active:
-                if random() < .75:
+                if random()<.75:
                     genome_dic[ino].active = False
                 else:
                     genome_dic[ino].active = True
