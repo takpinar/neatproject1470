@@ -4,6 +4,31 @@ from random import random, choice
 from typing import Callable
 
 
+def initialization(n_inputs: int, n_outputs: int, gene: Gene, genome: Genome, find_fitness: callable, pop_size=150):
+    ino = 0
+    population_genomes = [[] for _ in range(pop_size)]
+
+    # Make each genome gene-by-gene with random weights
+    for i in range(n_inputs):
+        for j in range(n_outputs):
+            for k in range(pop_size):
+                new_gene = gene(n_in=1,
+                            n_out=j,
+                            w=uniform(-1, 1),
+                            ino=ino,
+                            active=True
+                            )
+                population_genomes[k].append(new_gene)
+            ino += 1
+
+    population = []
+    for gen in population_genomes:
+        fitness = find_fitness(gen)
+        population.append(Genome(gen, fitness, generation=0))
+
+    return population
+
+
 def breed(g1: Genome, g2: Genome, get_fitness: Callable, generation: int) -> Genome:
     """
     :param g1: Genome of the first parent
