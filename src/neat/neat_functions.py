@@ -4,7 +4,7 @@ from random import random, choice, uniform
 from typing import Callable
 
 
-def initialization(n_inputs: int, n_outputs: int, gene: Gene, genome: Genome, find_fitness: Callable, pop_size=150):
+def initialization(n_inputs: int, n_outputs: int, find_fitness: Callable, pop_size: int = 150):
     ino = 0
     population_genomes = [[] for _ in range(pop_size)]
 
@@ -12,7 +12,7 @@ def initialization(n_inputs: int, n_outputs: int, gene: Gene, genome: Genome, fi
     for i in range(n_inputs):
         for j in range(n_outputs):
             for k in range(pop_size):
-                new_gene = gene(n_in=1,
+                new_gene = Gene(n_in=i,
                                 n_out=j,
                                 w=uniform(-1, 1),
                                 ino=ino,
