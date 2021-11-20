@@ -37,7 +37,7 @@ def breed(g1: Genome, g2: Genome, get_fitness: Callable, generation: int) -> Gen
     return child
 
 
-def delta(c1, c2, c3, genome1: Genome, genome2: Genome):
+def delta(genome1: Genome, genome2: Genome, c1: float = 1.0, c2: float = 1.0, c3: float = .4):
     """
     :param c1: Excess coefficient
     :param c2: Disjoint coefficient
@@ -86,12 +86,9 @@ def delta(c1, c2, c3, genome1: Genome, genome2: Genome):
             disjoint += 1
             j += 1
 
-    if n == 0:
-        return 0
+    # sanity check
+    assert matching != 0
 
-    delta = c1 * (excess / n) + c2 * (disjoint / n)
-
-    if matching != 0:
-        delta += c3 * (total_diff / matching)
+    delta = c1 * (excess / n) + c2 * (disjoint / n) + c3 * (total_diff / matching)
 
     return delta
