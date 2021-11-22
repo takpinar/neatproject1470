@@ -41,7 +41,7 @@ class ConnectionGene:
 
 class NodeGene:
     def __init__(self, n_num : int ):
-        self.nodes = n_num
+        self.n_num = n_num
         #TODO: Make node types ('sensor', 'hidden', 'output')
 
 
