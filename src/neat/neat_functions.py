@@ -1,7 +1,7 @@
-from neat_structures import Genome, Gene, Species
+from neat.neat_structures import Genome, Gene
 from copy import deepcopy
 from random import random, choice, uniform, sample
-from typing import Callable
+from typing import Callable, List
 
 
 def breed(g1: Genome, g2: Genome, get_fitness: Callable, generation: int) -> Genome:
@@ -93,63 +93,85 @@ def delta(genome1: Genome, genome2: Genome, c1: float = 1.0, c2: float = 1.0, c3
 
     return delta
 
-def mutate(g: Genome, ino: int, get_fitness: Callable):
-	"""
-	Function to randomly mutates the genome to alter the weights, add new connection,
-	or add new node.
-	:param g: genome to be mutated
-	:return: mutated genome and new innovation number
-	"""
 
-	nodes = g.nodes # Get list of existing nodes
-	genes = g.genes # Get list of existing connections
+###__Weight Mutation__###
+
+
+def mutateWeights(genes: List):
+	"""
+	Function to randomly mutates the genome to alter the connection weights
+	:param genes: List of genes
+	"""
 	
-	
-	###|Weight Mutations|###
-	
-	for connection in genes:
+	for i, connection in enumerate(genes):
 		if random() < 0.75:
 			randomPerturbation = uniform(-1,1)
-			connection.w += randomPerturbation
+			genes[i].w = connection.w + randomPerturbation
 
-	###|Structural Mutations|###
+
+###__Structural Mutations__###
+
+
+def mutateConnection(g: Genome):
+	"""
+	Function to randomly mutates the genome to add a new connection
+	:param genes: Genome to mutate
+	:param ino: current innovation number 
+	"""
 	
 	# ADD CONNECTION
 	if random() < 0.75:
 		newConnection = False
 		while not newConnection:
-			toBeConnected = sample(nodes, 2) # Get random new nodes to connect
+			toBeConnected = sample(g.nodes, 2) # Get random new nodes to connect
 			node1, node2 = toBeConnected[0], toBeConnected[1]
 			if (node1,node2) in g.directedConnects: # If existing connection, start over 
 				continue
 			newConnection = True
 
-		randomWeight = random() # Get new Weight
+		randomWeight = uniform(-1,1) # Get new Weight
 
 		####TODO: figure out innovation number
+		ino = max(g.inos)
 		ino += 1
 		newConnection = Gene(node1, node2, randomWeight, ino, active=True)
-		genes.append(newConnection)
+		g.genes.append(newConnection)
+		g.inos.add(ino)
+		g.ino_dic.update({ino: newConnection})
+		g.directedConnects.add((node1,node2))
+
+
+def mutateNode(g: Genome):
+	"""
+	Function to randomly mutates the genome to add a new node
+	:param genes: Genome to mutate
+	:param ino: current innovation number 
+	:return: mutated genome and update innovation number
+	"""
 
 	# ADD NODE
 	if random() < 0.75:
-		nodeNum = len(nodes)
-		
-		connection = sample(genes, 1) # Get connection in which to insert node 
+		connection = sample(g.genes, 1)[0] # Get connection in which to insert node 
 		connection.active = False # Disable old connection
 		oldWeight = connection.w
 		newWeight = 1
 		node1, node2 = connection.n_in, connection.n_out
+		g.directedConnects.remove((node1,node2)) # Remove directed connection
+
+		newNode = len(g.nodes) # Get number for new node
+		g.nodes.add(newNode)		
+
+		ino = max(g.inos)
+		ino += 1
+		newConnection1 = Gene(node1, newNode, newWeight, ino, active=True) # Connect node1 and new node
+		g.genes.append(newConnection1)
+		g.inos.add(ino)
+		g.ino_dic.update({ino: newConnection1})
+		g.directedConnects.add((node1, newNode))
 
 		ino += 1
-		newConnection1 = Gene(node1, nodeNum, newWeight, ino, active=True) # Connect node1 and new
-		ino += 1
-		newConnection2 = Gene(nodeNum, node2, oldWeight, ino, active=True) # connect new and node2
-
-		genes.append(newConnection1, newConnection2) # Add to connections list
-	
-	fitness = get_fitness(genes)
-	mutatedGenome = Genome(genes, fitness, g.generation) 
-
-	
-	return mutatedGenome, ino
+		newConnection2 = Gene(newNode, node2, oldWeight, ino, active=True) # connect new node and node2
+		g.genes.append(newConnection2)
+		g.inos.add(ino)
+		g.ino_dic.update({ino: newConnection2})
+		g.directedConnects.add((newNode, node2))

@@ -4,7 +4,7 @@ from typing import List
 class Genome:
     def __init__(self, genes: List, fitness: float, generation: int = 0):
         self.genes = genes 
-        self.nodes = set([g.n_in and g.n_out for g in genes])
+        self.nodes = set.union(set(g.n_in for g in genes), set(g.n_out for g in genes))
         self.fitness = fitness
         self.generation = generation
         self.inos = set([g.ino for g in genes])
