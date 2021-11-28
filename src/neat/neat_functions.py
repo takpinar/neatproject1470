@@ -116,7 +116,6 @@ def mutateConnection(g: Genome):
 	"""
 	Function to randomly mutates the genome to add a new connection
 	:param genes: Genome to mutate
-	:param ino: current innovation number 
 	"""
 	
 	# ADD CONNECTION
@@ -144,9 +143,7 @@ def mutateConnection(g: Genome):
 def mutateNode(g: Genome):
 	"""
 	Function to randomly mutates the genome to add a new node
-	:param genes: Genome to mutate
-	:param ino: current innovation number 
-	:return: mutated genome and update innovation number
+	:param genes: Genome to mutate	
 	"""
 
 	# ADD NODE
