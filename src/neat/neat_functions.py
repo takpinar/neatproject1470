@@ -1,7 +1,32 @@
 from neat.neat_structures import Genome, Gene, Species
 from copy import deepcopy
-from random import random, choice
+from random import random, choice, uniform
 from typing import Callable
+
+
+def initialization(n_inputs: int, n_outputs: int, get_fitness: Callable, pop_size: int = 150):
+    ino = 0
+    population_genomes = [[] for _ in range(pop_size)]
+
+    # Make each genome gene-by-gene with random weights
+    for i in range(n_inputs):
+        for j in range(n_outputs):
+            for k in range(pop_size):
+                new_gene = Gene(n_in=i,
+                                n_out=j,
+                                w=uniform(-1, 1),
+                                ino=ino,
+                                active=True
+                                )
+                population_genomes[k].append(new_gene)
+            ino += 1
+
+    population = []
+    for gen in population_genomes:
+        fitness = get_fitness(gen)
+        population.append(Genome(gen, fitness, generation=0))
+
+    return population
 
 
 def breed(g1: Genome, g2: Genome, get_fitness: Callable, generation: int) -> Genome:
