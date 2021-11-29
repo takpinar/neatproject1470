@@ -103,10 +103,14 @@ def mutateWeights(genes: List):
 	:param genes: List of genes
 	"""
 	
-	for i, connection in enumerate(genes):
-		if random() < 0.75:
-			randomPerturbation = uniform(-1,1)
-			genes[i].w = connection.w + randomPerturbation
+	for connection in genes:
+		if random() < 0.8:
+			if random() < 0.9:
+				randomPerturbation = uniform(-0.05,0.05)
+				connection.w += randomPerturbation
+			else:
+				newWeight = uniform(-1,1)
+				connection.w = newWeight
 
 
 ###__Structural Mutations__###
