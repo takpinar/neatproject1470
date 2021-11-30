@@ -1,7 +1,7 @@
 from neat.neat_structures import Genome, Gene, Species
 from copy import deepcopy
 from random import random, choice, uniform
-from typing import Callable
+from typing import Callable, List
 
 
 def initialization(n_inputs: int, n_outputs: int, get_fitness: Callable, pop_size: int = 150):
