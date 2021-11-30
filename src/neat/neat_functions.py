@@ -1,6 +1,6 @@
-from neat.neat_structures import Genome, Gene, Species
+from neat.neat_structures import Genome, Gene
 from copy import deepcopy
-from random import random, choice, uniform
+from random import random, choice, uniform, sample
 from typing import Callable, List
 
 
@@ -112,3 +112,87 @@ def delta(genome1: Genome, genome2: Genome, c1: float = 1.0, c2: float = 1.0, c3
     delta = c1 * (excess / n) + c2 * (disjoint / n) + c3 * (total_diff / matching)
 
     return delta
+
+  
+###__Weight Mutation__###
+
+
+def mutateWeights(genes: List):
+	"""
+	Function to randomly mutates the genome to alter the connection weights
+	:param genes: List of genes
+	"""
+	
+	for connection in genes:
+		if random() < 0.8:
+			if random() < 0.9:
+				randomPerturbation = uniform(-0.05,0.05)
+				connection.w += randomPerturbation
+			else:
+				newWeight = uniform(-1,1)
+				connection.w = newWeight
+
+
+###__Structural Mutations__###
+
+
+def mutateConnection(g: Genome):
+	"""
+	Function to randomly mutates the genome to add a new connection
+	:param genes: Genome to mutate
+	"""
+	
+	# ADD CONNECTION
+	if random() < 0.75:
+		newConnection = False
+		while not newConnection:
+			toBeConnected = sample(g.nodes, 2) # Get random new nodes to connect
+			node1, node2 = toBeConnected[0], toBeConnected[1]
+			if (node1,node2) in g.directedConnects: # If existing connection, start over 
+				continue
+			newConnection = True
+
+		randomWeight = uniform(-1,1) # Get new Weight
+
+		####TODO: figure out innovation number
+		ino = max(g.inos)
+		ino += 1
+		newConnection = Gene(node1, node2, randomWeight, ino, active=True)
+		g.genes.append(newConnection)
+		g.inos.add(ino)
+		g.ino_dic.update({ino: newConnection})
+		g.directedConnects.add((node1,node2))
+
+
+def mutateNode(g: Genome):
+	"""
+	Function to randomly mutates the genome to add a new node
+	:param genes: Genome to mutate	
+	"""
+
+	# ADD NODE
+	if random() < 0.75:
+		connection = sample(g.genes, 1)[0] # Get connection in which to insert node 
+		connection.active = False # Disable old connection
+		oldWeight = connection.w
+		newWeight = 1
+		node1, node2 = connection.n_in, connection.n_out
+		g.directedConnects.remove((node1,node2)) # Remove directed connection
+
+		newNode = len(g.nodes) # Get number for new node
+		g.nodes.add(newNode)		
+
+		ino = max(g.inos)
+		ino += 1
+		newConnection1 = Gene(node1, newNode, newWeight, ino, active=True) # Connect node1 and new node
+		g.genes.append(newConnection1)
+		g.inos.add(ino)
+		g.ino_dic.update({ino: newConnection1})
+		g.directedConnects.add((node1, newNode))
+
+		ino += 1
+		newConnection2 = Gene(newNode, node2, oldWeight, ino, active=True) # connect new node and node2
+		g.genes.append(newConnection2)
+		g.inos.add(ino)
+		g.ino_dic.update({ino: newConnection2})
+		g.directedConnects.add((newNode, node2))
