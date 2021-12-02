@@ -17,14 +17,14 @@ def initialization(n_inputs: int, n_outputs: int, get_fitness: Callable, pop_siz
                                 w=uniform(-1, 1),
                                 ino=ino,
                                 active=True
-                                )
+                                )	
                 population_genomes[k].append(new_gene)
-            ino += 1
+            ino += 1	
 
     population = []
-    for gen in population_genomes:
-        fitness = get_fitness(gen)
-        population.append(Genome(gen, fitness, generation=0))
+    for genome in population_genomes:
+        fitness = get_fitness(genome)
+        population.append(Genome(genome, fitness, generation=0))
 
     return population
 
@@ -140,6 +140,8 @@ def mutateWeights(genes: List):
 
 ###__Structural Mutations__###
 
+###TODO: Add genome's population size param (large/small) to adjust prob of mutation
+
 
 def mutateConnection(g: Genome):
 	"""
@@ -159,7 +161,6 @@ def mutateConnection(g: Genome):
 
 		randomWeight = uniform(-1,1) # Get new Weight
 
-		####TODO: figure out innovation number
 		ino = max(g.inos)
 		ino += 1
 		newConnection = Gene(node1, node2, randomWeight, ino, active=True)
